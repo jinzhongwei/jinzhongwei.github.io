@@ -12,7 +12,7 @@
 <meta property="og:url" content="http://crazycoder.info/2017/12/03/centos 安装k-vim完全教程版/index.html">
 <meta property="og:site_name" content="饮水思源">
 <meta property="og:description" content="记录在装vim插件时遇到的各种坑">
-<meta property="og:updated_time" content="2017-12-03T08:59:12.000Z">
+<meta property="og:updated_time" content="2017-12-03T09:36:59.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="centos 安装k-vim完全教程版">
 <meta name="twitter:description" content="记录在装vim插件时遇到的各种坑">
@@ -285,18 +285,36 @@
 <h5 id="修改老版本的ln指向注意这里修改后可能会影响yum的使用">5. 修改老版本的ln指向（注意：这里修改后，可能会影响yum的使用）</h5>
 <p>ln -s /usr/local/python27/bin/python /usr/bin/python</p>
 <h5 id="注意很多人在动态编译完之后发现还是不行安装ycm时继续报同样的错误那是应为你没有把动态编译的库放在正确的位置">6.注意：很多人在动态编译完之后，发现还是不行，安装YCM时，继续报同样的错误，那是应为你没有把动态编译的库放在正确的位置。</h5>
-<p>6.1. cp /usr/local/python27/lib/libpython2.7.so.1.0　 /usr/local/lib cd /usr/local/lib ln -s libpython2.7.so.1.0 　libpython2.7.so</p>
+<p>6.1. cp /usr/local/python27/lib/libpython2.7.so.1.0　 /usr/local/lib</p>
+<pre><code> cd /usr/local/lib  
+
+ ln -s libpython2.7.so.1.0 　libpython2.7.so  </code></pre>
 <p>6.2. 使用命令whereis libpython2.7.so.1.0得到如下结果就说明 libpython2.7.so.1: /usr/local/lib/libpython2.7.so.1.0</p>
-<p>6.3. 如果whereis没有结果，或者还有import错误，可以尝试如下操作： 在/etc/ld.so.conf中加入新行/usr/local/lib 保存后，运行 /sbin/ldconfig /sbin/ldconfig –v</p>
+<p>6.3. 如果whereis没有结果，或者还有import错误，可以尝试如下操作： 在/etc/ld.so.conf中加入新行/usr/local/lib</p>
+<pre><code>保存后，运行  
+
+/sbin/ldconfig  
+
+/sbin/ldconfig –v  </code></pre>
 <h4 id="二确保你的vim版本够高最好还是直接安装vim8.0">二、确保你的vim版本够高，最好还是直接安装vim8.0</h4>
-<p>gitclone git@github.com:jinzhongwei/vim.git cd vim/src ./configure –with-features=huge –enable-rubyinterp –enable-pythoninterp –enable-luainterp –enable-multibyte –enable-sniff –enable-fontset –enable-cscope –enable-gui=auto –prefix=/usr –enable-xsmp –enable-xim –enable-gpm make make install</p>
+<p>gitclone git@github.com:jinzhongwei/vim.git cd vim/src ./configure –with-features=huge –enable-rubyinterp –enable-pythoninterp –enable-luainterp –enable-multibyte –enable-sniff –enable-fontset –enable-cscope –enable-gui=auto –prefix=/usr –enable-xsmp –enable-xim –enable-gpm</p>
+<p>make</p>
+<p>make install</p>
 <h4 id="三安装k-vim">三、安装k-vim</h4>
 <h5 id="下载">下载</h5>
 <p>git clone git@github.com:jinzhongwei/k-vim.git</p>
 <h5 id="安装依赖">安装依赖</h5>
-<p>sudo yum install python-devel.x86_64 sudo yum groupinstall ‘Development Tools’ sudo rpm -Uvh https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm sudo yum install the_silver_searcher sudo yum install cmake pip install flake8 yapf</p>
+<p>sudo yum install python-devel.x86_64</p>
+<p>sudo yum groupinstall ‘Development Tools’</p>
+<p>sudo rpm -Uvh https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm</p>
+<p>sudo yum install the_silver_searcher</p>
+<p>sudo yum install cmake</p>
+<p>pip install flake8 yapf</p>
 <h5 id="安装">安装</h5>
-<p>cd k-vim/ sh -x install.sh 安装完之后，运行命令vim，如果没有报什么问题，恭喜你安装成功。 如果出现什么问题，根据问题进行解决，注意很重要的一点要对YCM重新编译一遍， cd k-vim/bundle/YouCompleteMe/ ./install.sh –clang-completer</p>
+<p>cd k-vim/</p>
+<p>sh -x install.sh</p>
+<p>安装完之后，运行命令vim，如果没有报什么问题，恭喜你安装成功。 如果出现什么问题，根据问题进行解决，注意很重要的一点要对YCM重新编译一遍， cd k-vim/bundle/YouCompleteMe/</p>
+<p>./install.sh –clang-completer</p>
 <h4 id="四注意">四、注意</h4>
 <p>在安装之前还需要注意自己的电脑的CMake版本是不是过低，以及GCC版本过低，如果过低，请自行升级。 我自测的GCC版本4.8.5可以，CMake3.0可以</p>
 
@@ -357,7 +375,7 @@
         <p><span>本文标题:</span><a href="/2017/12/03/centos 安装k-vim完全教程版/">centos 安装k-vim完全教程版</a></p>
         <p><span>文章作者:</span><a href="/" title="访问 Jinzhongwei 的个人博客">Jinzhongwei</a></p>
         <p><span>发布时间:</span>2017年12月03日 - 16时56分</p>
-        <p><span>最后更新:</span>2017年12月03日 - 16时59分</p>
+        <p><span>最后更新:</span>2017年12月03日 - 17时36分</p>
         <p>
             <span>原始链接:</span><a class="post-url" href="/2017/12/03/centos 安装k-vim完全教程版/" title="centos 安装k-vim完全教程版">http://crazycoder.info/2017/12/03/centos 安装k-vim完全教程版/</a>
             <span class="copy-path" data-clipboard-text="原文: http://crazycoder.info/2017/12/03/centos 安装k-vim完全教程版/　　作者: Jinzhongwei" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
