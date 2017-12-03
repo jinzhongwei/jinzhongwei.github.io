@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>centos 安装k-vim完全教程版 | 饮水思源</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="记录在装vim插件时遇到的各种坑">
+<meta name="keywords" content="centos,k-vim">
+<meta property="og:type" content="article">
+<meta property="og:title" content="centos 安装k-vim完全教程版">
+<meta property="og:url" content="http://crazycoder.info/2017/12/03/centos 安装k-vim完全教程版/index.html">
+<meta property="og:site_name" content="饮水思源">
+<meta property="og:description" content="记录在装vim插件时遇到的各种坑">
+<meta property="og:updated_time" content="2017-12-03T08:59:12.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="centos 安装k-vim完全教程版">
+<meta name="twitter:description" content="记录在装vim插件时遇到的各种坑">
+  
+    <link rel="alternative" href="/atom.xml" title="饮水思源" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/img/favicon.png">
+  
+  
+      <link rel="stylesheet" href="//cdn.bootcss.com/animate.css/3.5.0/animate.min.css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/font-awesome/css/font-awesome.min.css">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  
+  
+      <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  
+  <!-- 加载特效 -->
+    <script src="/js/pace.js"></script>
+    <link href="/css/pace/pace-theme-flash.css" rel="stylesheet" />
+  <script>
+      var yiliaConfig = {
+          rootUrl: '/',
+          fancybox: true,
+          animate: true,
+          isHome: false,
+          isPost: true,
+          isArchive: false,
+          isTag: false,
+          isCategory: false,
+          open_in_new: false
+      }
+  </script>
+</head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+    <header id="header" class="inner">
+        <a href="/" class="profilepic">
+            
+            <img lazy-src="/img/head.jpg" class="js-avatar">
+            
+        </a>
+
+        <hgroup>
+          <h1 class="header-author"><a href="/" title="Hi Mate">Jinzhongwei</a></h1>
+        </hgroup>
+
+        
+        <p class="header-subtitle">饮水思源，方能解惑</p>
+        
+        
+        
+            <div id="switch-btn" class="switch-btn">
+                <div class="icon">
+                    <div class="icon-ctn">
+                        <div class="icon-wrap icon-house" data-idx="0">
+                            <div class="birdhouse"></div>
+                            <div class="birdhouse_holes"></div>
+                        </div>
+                        <div class="icon-wrap icon-ribbon hide" data-idx="1">
+                            <div class="ribbon"></div>
+                        </div>
+                        
+                        <div class="icon-wrap icon-link hide" data-idx="2">
+                            <div class="loopback_l"></div>
+                            <div class="loopback_r"></div>
+                        </div>
+                        
+                        
+                        <div class="icon-wrap icon-me hide" data-idx="3">
+                            <div class="user"></div>
+                            <div class="shoulder"></div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                <div class="tips-box hide">
+                    <div class="tips-arrow"></div>
+                    <ul class="tips-inner">
+                        <li>菜单</li>
+                        <li>标签</li>
+                        
+                        <li>友情链接</li>
+                        
+                        
+                        <li>关于我</li>
+                        
+                    </ul>
+                </div>
+            </div>
+        
+
+        <div id="switch-area" class="switch-area">
+            <div class="switch-wrap">
+                <section class="switch-part switch-part1">
+                    <nav class="header-menu">
+                        <ul>
+                        
+                            <li><a href="/Home">博客首页</a></li>
+                        
+                            <li><a href="/works">作品展示</a></li>
+                        
+                            <li><a href="/about">留言打卡</a></li>
+                        
+                            <li><a href="/FrontEndGuide">前端导航</a></li>
+                        
+                        </ul>
+                    </nav>
+                    <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fl mail" target="_blank" href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&email=PAkNDgsKBQ4MCnxNTRJfU1E" title="mail">mail</a>
+                            
+                                <a class="fl github" target="_blank" href="https://github.com/jinzhongwei" title="github">github</a>
+                            
+                                <a class="fl zhihu" target="_blank" href="#" title="zhihu">zhihu</a>
+                            
+                                <a class="fl weibo" target="_blank" href="#" title="weibo">weibo</a>
+                            
+                                <a class="fl google" target="_blank" href="#" title="google">google</a>
+                            
+                                <a class="fl twitter" target="_blank" href="#" title="twitter">twitter</a>
+                            
+                                <a class="fl linkedin" target="_blank" href="#" title="linkedin">linkedin</a>
+                            
+                        </ul>
+                    </nav>
+                </section>
+                
+                
+                <section class="switch-part switch-part2">
+                    <div class="widget tagcloud" id="js-tagcloud">
+                        
+                    </div>
+                </section>
+                
+                
+                
+                <section class="switch-part switch-part3">
+                    <div id="js-friends">
+                    
+                      <a target="_blank" class="main-nav-link switch-friends-link" href="http://jinzhongwei.github.io/">name</a>
+                    
+                    </div>
+                </section>
+                
+
+                
+                
+                <section class="switch-part switch-part4">
+                
+                    <div id="js-aboutme">喜欢用代码解决一切，喜欢算法，喜欢唱歌</div>
+                </section>
+                
+            </div>
+        </div>
+    </header>                
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+      <div class="overlay">
+          <div class="slider-trigger"></div>
+          <h1 class="header-author js-mobile-header hide"><a href="/" title="Me">Jinzhongwei</a></h1>
+      </div>
+    <div class="intrude-less">
+        <header id="header" class="inner">
+            <a href="/" class="profilepic">
+                
+                    <img lazy-src="/img/head.jpg" class="js-avatar">
+                
+            </a>
+            <hgroup>
+              <h1 class="header-author"><a href="/" title="Me">Jinzhongwei</a></h1>
+            </hgroup>
+            
+            <p class="header-subtitle">饮水思源，方能解惑</p>
+            
+            <nav class="header-menu">
+                <ul>
+                
+                    <li><a href="/Home">博客首页</a></li>
+                
+                    <li><a href="/works">作品展示</a></li>
+                
+                    <li><a href="/about">留言打卡</a></li>
+                
+                    <li><a href="/FrontEndGuide">前端导航</a></li>
+                
+                <div class="clearfix"></div>
+                </ul>
+            </nav>
+            <nav class="header-nav">
+                <div class="social">
+                    
+                        <a class="mail" target="_blank" href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&email=PAkNDgsKBQ4MCnxNTRJfU1E" title="mail">mail</a>
+                    
+                        <a class="github" target="_blank" href="https://github.com/jinzhongwei" title="github">github</a>
+                    
+                        <a class="zhihu" target="_blank" href="#" title="zhihu">zhihu</a>
+                    
+                        <a class="weibo" target="_blank" href="#" title="weibo">weibo</a>
+                    
+                        <a class="google" target="_blank" href="#" title="google">google</a>
+                    
+                        <a class="twitter" target="_blank" href="#" title="twitter">twitter</a>
+                    
+                        <a class="linkedin" target="_blank" href="#" title="linkedin">linkedin</a>
+                    
+                </div>
+            </nav>
+        </header>                
+    </div>
+</nav>
+      <div class="body-wrap"><article id="post-centos 安装k-vim完全教程版" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2017/12/03/centos 安装k-vim完全教程版/" class="article-date">
+      <time datetime="2017-12-03T08:56:00.000Z" itemprop="datePublished">2017-12-03</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      centos 安装k-vim完全教程版
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/Blog/">Blog</a>
+    </div>
+
+
+        
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <p>k-vim把vim的插件集成一起，安装经常失败，其中最大的原因是就YouCompleteMe安装失败的几率最大，本人经过多次的折腾终于给摸透了，下面给大家一起分享安装中的各个细节。</p>
+<h4 id="一确保你的python版本为大于2.7并且是动态编译的">一、确保你的python版本为大于2.7+，并且是动态编译的</h4>
+<p>动态编译的很重要，下面给出编译python的过程</p>
+<h5 id="下载python2.7">1. 下载python2.7+</h5>
+<p>下载命令wget，python的官网，自己下载即可，https://www.python.org/</p>
+<h5 id="解压文件">2. 解压文件</h5>
+<p>以python2.7.5为例，tar -zxvf Python-2.7.5.tar.bz2</p>
+<h5 id="创建安装目录">3. 创建安装目录</h5>
+<p>mkdir /usr/local/python27</p>
+<h5 id="安装python">4. 安装python</h5>
+<p>./configure –prefix=/usr/local/python27 –enable-shared make make install 其中 –enable-shared会使得对python进行动态编译，生成 libpython2.7.so.1.0 和 libpython2.7.so 文件。</p>
+<h5 id="修改老版本的ln指向注意这里修改后可能会影响yum的使用">5. 修改老版本的ln指向（注意：这里修改后，可能会影响yum的使用）</h5>
+<p>ln -s /usr/local/python27/bin/python /usr/bin/python</p>
+<h5 id="注意很多人在动态编译完之后发现还是不行安装ycm时继续报同样的错误那是应为你没有把动态编译的库放在正确的位置">6.注意：很多人在动态编译完之后，发现还是不行，安装YCM时，继续报同样的错误，那是应为你没有把动态编译的库放在正确的位置。</h5>
+<p>6.1. cp /usr/local/python27/lib/libpython2.7.so.1.0　 /usr/local/lib cd /usr/local/lib ln -s libpython2.7.so.1.0 　libpython2.7.so</p>
+<p>6.2. 使用命令whereis libpython2.7.so.1.0得到如下结果就说明 libpython2.7.so.1: /usr/local/lib/libpython2.7.so.1.0</p>
+<p>6.3. 如果whereis没有结果，或者还有import错误，可以尝试如下操作： 在/etc/ld.so.conf中加入新行/usr/local/lib 保存后，运行 /sbin/ldconfig /sbin/ldconfig –v</p>
+<h4 id="二确保你的vim版本够高最好还是直接安装vim8.0">二、确保你的vim版本够高，最好还是直接安装vim8.0</h4>
+<p>gitclone git@github.com:jinzhongwei/vim.git cd vim/src ./configure –with-features=huge –enable-rubyinterp –enable-pythoninterp –enable-luainterp –enable-multibyte –enable-sniff –enable-fontset –enable-cscope –enable-gui=auto –prefix=/usr –enable-xsmp –enable-xim –enable-gpm make make install</p>
+<h4 id="三安装k-vim">三、安装k-vim</h4>
+<h5 id="下载">下载</h5>
+<p>git clone git@github.com:jinzhongwei/k-vim.git</p>
+<h5 id="安装依赖">安装依赖</h5>
+<p>sudo yum install python-devel.x86_64 sudo yum groupinstall ‘Development Tools’ sudo rpm -Uvh https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm sudo yum install the_silver_searcher sudo yum install cmake pip install flake8 yapf</p>
+<h5 id="安装">安装</h5>
+<p>cd k-vim/ sh -x install.sh 安装完之后，运行命令vim，如果没有报什么问题，恭喜你安装成功。 如果出现什么问题，根据问题进行解决，注意很重要的一点要对YCM重新编译一遍， cd k-vim/bundle/YouCompleteMe/ ./install.sh –clang-completer</p>
+<h4 id="四注意">四、注意</h4>
+<p>在安装之前还需要注意自己的电脑的CMake版本是不是过低，以及GCC版本过低，如果过低，请自行升级。 我自测的GCC版本4.8.5可以，CMake3.0可以</p>
+
+      
+      
+        <div class="page-reward">
+          <p><a href="javascript:void(0)" onclick="dashangToggle()" class="dashang">赏</a></p>
+          <div class="hide_box"></div>
+          <div class="shang_box">
+            <a class="shang_close" href="javascript:void(0)" onclick="dashangToggle()">×</a>
+            <div class="shang_tit">
+              <p>纯属好玩</p>
+            </div>
+            <div class="shang_payimg">
+              <img src="/img/alipayimg.jpg" alt="扫码支持" title="扫一扫" />
+            </div>
+              <div class="pay_explain">扫码打赏，你说多少就多少</div>
+            <div class="shang_payselect">
+              
+                <div class="pay_item checked" data-id="alipay">
+                  <span class="radiobox"></span>
+                  <span class="pay_logo"><img src="/img/alipay.png" alt="支付宝" /></span>
+                </div>
+              
+              
+                <div class="pay_item" data-id="wechat">
+                  <span class="radiobox"></span>
+                  <span class="pay_logo"><img src="/img/weixin.png" alt="微信" /></span>
+                </div>
+              
+            </div>
+            <div class="shang_info">
+              <p>打开<span id="shang_pay_txt">支付宝</span>扫一扫，即可进行扫码打赏哦</p>
+            </div>
+          </div>
+        </div>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/zepto/1.2.0/zepto.min.js"></script>
+        <script type="text/javascript">
+          $(".pay_item").click(function(){
+            $(this).addClass('checked').siblings('.pay_item').removeClass('checked');
+            var dataid=$(this).attr('data-id');
+            $(".shang_payimg img").attr("src","/img/"+dataid+"img.jpg");
+            $("#shang_pay_txt").text(dataid=="alipay"?"支付宝":"微信");
+          });
+          function dashangToggle(){
+            
+            $(".hide_box").fadeToggle();
+            $(".shang_box").fadeToggle();
+          }
+        </script>
+      
+    </div>
+    
+  </div>
+  
+    
+    <div class="copyright">
+        <p><span>本文标题:</span><a href="/2017/12/03/centos 安装k-vim完全教程版/">centos 安装k-vim完全教程版</a></p>
+        <p><span>文章作者:</span><a href="/" title="访问 Jinzhongwei 的个人博客">Jinzhongwei</a></p>
+        <p><span>发布时间:</span>2017年12月03日 - 16时56分</p>
+        <p><span>最后更新:</span>2017年12月03日 - 16时59分</p>
+        <p>
+            <span>原始链接:</span><a class="post-url" href="/2017/12/03/centos 安装k-vim完全教程版/" title="centos 安装k-vim完全教程版">http://crazycoder.info/2017/12/03/centos 安装k-vim完全教程版/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://crazycoder.info/2017/12/03/centos 安装k-vim完全教程版/　　作者: Jinzhongwei" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <script src="/js/clipboard.min.js"></script>
+            <script> var clipboard = new Clipboard('.copy-path'); </script>
+        </p>
+        <p>
+            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/cn/" title="中国大陆 (CC BY-NC-SA 3.0 CN)" target = "_blank">"署名-非商用-相同方式共享 3.0"</a> 转载请保留原文链接及作者。
+        </p>
+    </div>
+
+
+
+<nav id="article-nav">
+  
+  
+    <a href="/2017/11/01/信赖域算法原理/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">信赖域算法原理</div>
+      <strong class="article-nav-caption">></strong>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+    <div id="toc" class="toc-article">
+    <strong class="toc-title">文章目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-4"><a class="toc-link" href="#一确保你的python版本为大于2.7并且是动态编译的"><span class="toc-number">1.</span> <span class="toc-text">一、确保你的python版本为大于2.7+，并且是动态编译的</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#下载python2.7"><span class="toc-number">1.1.</span> <span class="toc-text">1. 下载python2.7+</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#解压文件"><span class="toc-number">1.2.</span> <span class="toc-text">2. 解压文件</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#创建安装目录"><span class="toc-number">1.3.</span> <span class="toc-text">3. 创建安装目录</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#安装python"><span class="toc-number">1.4.</span> <span class="toc-text">4. 安装python</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#修改老版本的ln指向注意这里修改后可能会影响yum的使用"><span class="toc-number">1.5.</span> <span class="toc-text">5. 修改老版本的ln指向（注意：这里修改后，可能会影响yum的使用）</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#注意很多人在动态编译完之后发现还是不行安装ycm时继续报同样的错误那是应为你没有把动态编译的库放在正确的位置"><span class="toc-number">1.6.</span> <span class="toc-text">6.注意：很多人在动态编译完之后，发现还是不行，安装YCM时，继续报同样的错误，那是应为你没有把动态编译的库放在正确的位置。</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#二确保你的vim版本够高最好还是直接安装vim8.0"><span class="toc-number">2.</span> <span class="toc-text">二、确保你的vim版本够高，最好还是直接安装vim8.0</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#三安装k-vim"><span class="toc-number">3.</span> <span class="toc-text">三、安装k-vim</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#下载"><span class="toc-number">3.1.</span> <span class="toc-text">下载</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#安装依赖"><span class="toc-number">3.2.</span> <span class="toc-text">安装依赖</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#安装"><span class="toc-number">3.3.</span> <span class="toc-text">安装</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#四注意"><span class="toc-number">4.</span> <span class="toc-text">四、注意</span></a></li></ol>
+</div>
+<input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
+
+<script src="https://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+<script>
+    var valueHide = "隐藏目录";
+    var valueShow = "显示目录";
+
+    if ($(".left-col").is(":hidden")) {
+        $("#tocButton").attr("value", valueShow);
+    }
+    $("#tocButton").click(function() {
+        if ($("#toc").is(":hidden")) {
+            $("#tocButton").attr("value", valueHide);
+            $("#toc").slideDown(320);
+        }
+        else {
+            $("#tocButton").attr("value", valueShow);
+            $("#toc").slideUp(350);
+        }
+    })
+    if ($(".toc").length < 1) {
+        $("#toc, #tocButton").hide();
+    }
+</script>
+
+
+
+
+
+<div class="bdsharebuttonbox">
+	<a href="#" class="fx fa-weibo bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+	<a href="#" class="fx fa-weixin bds_weixin" data-cmd="weixin" title="分享到微信"></a>
+	<a href="#" class="fx fa-qq bds_sqq" data-cmd="sqq" title="分享到QQ好友"></a>
+	<a href="#" class="fx fa-facebook-official bds_fbook" data-cmd="fbook" title="分享到Facebook"></a>
+	<a href="#" class="fx fa-twitter bds_twi" data-cmd="twi" title="分享到Twitter"></a>
+	<a href="#" class="fx fa-linkedin bds_linkedin" data-cmd="linkedin" title="分享到linkedin"></a>
+	<a href="#" class="fx fa-files-o bds_copy" data-cmd="copy" title="分享到复制网址"></a>
+</div>
+<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"2","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+
+
+
+
+    
+        <div id="gitments"></div>
+<script src="/js/gitment.browser.js"></script>
+<script>
+    var gitment = new Gitment({
+      id: window.location.pathname,
+      owner: 'jinzhongwei',
+      repo: 'blog-comments',
+      oauth: {
+        client_id: 'e3aadac65c66579f80bc',
+        client_secret: '169de6adffaa25773fb258828cc8765d7a844781',
+      },
+    })
+    gitment.render('gitments')
+</script>
+    
+
+
+
+    <div class="scroll" id="post-nav-button">
+        
+            <a href="/" title="回到主页"><i class="fa fa-home"></i></a>
+        
+        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
+        
+            <a href="/2017/11/01/信赖域算法原理/" title="下一篇: 信赖域算法原理">
+                <i class="fa fa-angle-right"></i>
+            </a>
+        
+    </div>
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2017/12/03/centos 安装k-vim完全教程版/">centos 安装k-vim完全教程版</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/11/01/信赖域算法原理/">信赖域算法原理</a></li></ul>
+    <script src="https://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+    <script>
+        $(".post-list").addClass("toc-article");
+        $(".post-list-item a").attr("target","_blank");
+        $("#post-nav-button > a:nth-child(2)").click(function() {
+            $(".fa-bars, .fa-times").toggle();
+            $(".post-list").toggle(300);
+            if ($(".toc").length > 0) {
+                $("#toc, #tocButton").toggle(200, function() {
+                    if ($(".switch-area").is(":visible")) {
+                        $("#tocButton").attr("value", valueHide);
+                        }
+                    })
+            }
+            else {
+            }
+        })
+    </script>
+
+
+
+    <script>
+        
+    </script>
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script></div>
+      <footer id="footer">
+    <div class="outer">
+        <div id="footer-info">
+            <div class="footer-left">
+                &copy; 2017 Jinzhongwei
+            </div>
+            <div class="footer-right">
+                <a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/luuman/hexo-theme-spfk" target="_blank">spfk</a> by luuman
+            </div>
+        </div>
+        
+            <div class="visit">
+                
+                    <span id="busuanzi_container_site_pv" style='display:none'>
+                        <span id="site-visit" >总到访人数: 
+                            <span id="busuanzi_value_site_uv"></span>
+                        </span>
+                    </span>
+                
+                
+                    <span>, </span>
+                
+                
+                    <span id="busuanzi_container_page_pv" style='display:none'>
+                        <span id="page-visit">本页阅读量: 
+                            <span id="busuanzi_value_page_pv"></span>
+                        </span>
+                    </span>
+                
+            </div>
+        
+    </div>
+</footer>
+
+    </div>
+    <script src="https://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+<script src="/js/main.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            var backgroundnum = 24;
+            var backgroundimg = "url(/background/bg-x.jpg)".replace(/x/gi, Math.ceil(Math.random() * backgroundnum));
+            $("#mobile-nav").css({"background-image": backgroundimg,"background-size": "cover","background-position": "center"});
+            $(".left-col").css({"background-image": backgroundimg,"background-size": "cover","background-position": "center"});
+        })
+    </script>
+
+
+
+
+
+<div class="scroll" id="scroll">
+    <a href="#"><i class="fa fa-arrow-up"></i></a>
+    <a href="#comments"><i class="fa fa-comments-o"></i></a>
+    <a href="#footer"><i class="fa fa-arrow-down"></i></a>
+</div>
+<script>
+    $(document).ready(function() {
+        if ($("#comments").length < 1) {
+            $("#scroll > a:nth-child(2)").hide();
+        };
+    })
+</script>
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+
+  <script language="javascript">
+    $(function() {
+        $("a[title]").each(function() {
+            var a = $(this);
+            var title = a.attr('title');
+            if (title == undefined || title == "") return;
+            a.data('title', title).removeAttr('title').hover(
+
+            function() {
+                var offset = a.offset();
+                $("<div id=\"anchortitlecontainer\"></div>").appendTo($("body")).html(title).css({
+                    top: offset.top - a.outerHeight() - 15,
+                    left: offset.left + a.outerWidth()/2 + 1
+                }).fadeIn(function() {
+                    var pop = $(this);
+                    setTimeout(function() {
+                        pop.remove();
+                    }, pop.text().length * 800);
+                });
+            }, function() {
+                $("#anchortitlecontainer").remove();
+            });
+        });
+    });
+</script>
+
+
+  </div>
+</body>
+</html>
