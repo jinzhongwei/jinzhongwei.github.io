@@ -12,7 +12,7 @@
 <meta property="og:url" content="http://crazycoder.info/2017/12/13/2017-11-24-信赖域算法原理/index.html">
 <meta property="og:site_name" content="饮水思源">
 <meta property="og:description" content="最优化算法中信赖域法的原理描述">
-<meta property="og:updated_time" content="2017-12-13T12:29:46.000Z">
+<meta property="og:updated_time" content="2017-12-13T12:34:35.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="信赖域算法原理">
 <meta name="twitter:description" content="最优化算法中信赖域法的原理描述">
@@ -237,7 +237,7 @@
   
     <div class="article-meta">
       <a href="/2017/12/13/2017-11-24-信赖域算法原理/" class="article-date">
-      <time datetime="2017-12-13T12:29:46.000Z" itemprop="datePublished">2017-12-13</time>
+      <time datetime="2017-12-13T12:34:35.000Z" itemprop="datePublished">2017-12-13</time>
 </a>
     </div>
   
@@ -271,40 +271,51 @@
     <div class="article-entry" itemprop="articleBody">
       
           
-        <h3 id="最优化方法介绍"><a href="#最优化方法介绍" class="headerlink" title="最优化方法介绍"></a>最优化方法介绍</h3><p>提到最优化方法，常见的有梯度下降法（衍生出来的有批梯度下降，随机梯度下降）、牛顿法（衍生出来了拟牛顿）等。我们知道，最优化在机器学习中，是为了优化损失函数，求得其最小值，即为$\mathop {\min }\limits_\theta  f({x_\theta })$，其中 $\theta$ 为损失函数的参数，最优化的目的就是找到最佳的$\theta$使得损失函数最小。梯度下降的方法是求出损失函数在某一点的梯度，然后沿着负梯度方向走一小步，然后继续求新点的梯度，继续的迭代，直到达到迭代限定的次数，或者梯度极小，则迭代结束，求得最小值。对于牛顿法的原理，这里简单推导下:<br>先用泰勒展开去逼近目标函数$f(x)$即为</p>
-<script type="math/tex; mode=display">\varphi (x) = f({x_k}) + f'({x_k})(x - {x_k}) + \frac{1}{2}f''({x_k}){(x - {x_k})^2}</script><p>$\phi (x)$是二阶展开式，高阶项被略去，既然我们把其当做目标函数的逼近式，则我们对该函数求最值，那么采用的方法就是求出展开后的二次逼近式的导数，然后另其等于0，即如下：</p>
-<pre><code>$$\varphi &#39;(x) = 0,$$
-$$f&#39;({x_k}) + f&#39;&#39;({x_k})(x - {x_k}) = 0$$
-</code></pre><p>然后得出</p>
-<script type="math/tex; mode=display">x = {x_k} - \frac{f'({x_k})} {f''({x_k})}</script><p>  这里我们感性的理解下这种思路，我们知道，当函数在点$x_k$泰勒展开时，取其前几阶式（牛顿法取的是二阶）用于逼近原始的函数，那么只有在展开的那个点附近，才能用泰勒展开的式子作为近似原始函数，因为我们取的毕竟是有限的阶数（高阶的我们已省略），那么展开的函数离$x_k$点较远的点可能会有较大的误差，那么上述的式子中，我们对展开函数进行求极值，求出的只是我们的近似函数的极值，并非原始函数的极值，但跟原始的极值很接近，那么我们继续在新的点上展开，然后继续求极值，那么就会越来越接近原始函数的极值。想象一下，如果原始函数在展开的点较为平滑，那么其二次逼近式在那一点附近就会很接近原始的函数，那么每次求得的近似函数的极值会跟原始的函数的极值很接近，那么牛顿法收敛的就会很快。但是如果原始函数在站开点处是一个极其不平滑，坑坑洼洼的函数，那么我们在那一点展开的二次逼近式，就可能会跟原始函数相差很远，那么求得的极值可能会跟原始函数的极值不是很接近，甚至会变得更远，这也许就是牛顿法的一些局限性的原因吧。<br>  在上面提到的方法中我们发现，梯度下降是先确定方向，然后沿着方向走，牛顿法也很类似，展开逼近函数后，沿着逼近函数的极值，其实就是沿着一个二阶的方向走。那么本文要说的是另外的一种思路，如果我们先不确定方向，而是先确定下一步我们要走的长度，从初始点开始，确定下一步要走的长度，然后以该长度为半径的空间区域内，寻找最小的一个点，走到该点，然后再从新的点确定长度，接着依次的按照这种方法进行迭代，直到找到函数的最小值点。接下来我们详述下该方法的原理。</p>
-<h3 id="信赖域方法原理"><a href="#信赖域方法原理" class="headerlink" title="信赖域方法原理"></a>信赖域方法原理</h3><p>  沿着上述的问题，我们提出几个问题，根据这几个问题，展开描述信赖域方法的实现原理:  </p>
-<ol>
-<li><p>信赖域法在求得步长范围内空间的最小值点时，求的是什么函数的最小值点，是原始的损失函数的最小值点吗?  </p>
-<p>2.确定完步长之后，在步长范围内空间是怎样求得最小值点的？  </p>
-<p>3.步长是怎样确定的？  </p>
-</li>
+        <h3 id="最优化方法介绍">最优化方法介绍</h3>
+<p>提到最优化方法，常见的有梯度下降法（衍生出来的有批梯度下降，随机梯度下降）、牛顿法（衍生出来了拟牛顿）等。我们知道，最优化在机器学习中，是为了优化损失函数，求得其最小值，即为<span class="math inline">\(\mathop {\min }\limits_\theta f({x_\theta })\)</span>，其中 <span class="math inline">\(\theta\)</span> 为损失函数的参数，最优化的目的就是找到最佳的<span class="math inline">\(\theta\)</span>使得损失函数最小。梯度下降的方法是求出损失函数在某一点的梯度，然后沿着负梯度方向走一小步，然后继续求新点的梯度，继续的迭代，直到达到迭代限定的次数，或者梯度极小，则迭代结束，求得最小值。对于牛顿法的原理，这里简单推导下: 先用泰勒展开去逼近目标函数<span class="math inline">\(f(x)\)</span>即为 <span class="math display">\[\varphi (x) = f({x_k}) + f&#39;({x_k})(x - {x_k}) + \frac{1}{2}f&#39;&#39;({x_k}){(x - {x_k})^2}\]</span> <span class="math inline">\(\phi (x)\)</span>是二阶展开式，高阶项被略去，既然我们把其当做目标函数的逼近式，则我们对该函数求最值，那么采用的方法就是求出展开后的二次逼近式的导数，然后另其等于0，即如下： <span class="math display">\[\varphi &#39;(x) = 0,\]</span> <span class="math display">\[f&#39;({x_k}) + f&#39;&#39;({x_k})(x - {x_k}) = 0\]</span> 然后得出 <span class="math display">\[x = {x_k} - \frac{f&#39;({x_k})} {f&#39;&#39;({x_k})}\]</span> 这里我们感性的理解下这种思路，我们知道，当函数在点<span class="math inline">\(x_k\)</span>泰勒展开时，取其前几阶式（牛顿法取的是二阶）用于逼近原始的函数，那么只有在展开的那个点附近，才能用泰勒展开的式子作为近似原始函数，因为我们取的毕竟是有限的阶数（高阶的我们已省略），那么展开的函数离<span class="math inline">\(x_k\)</span>点较远的点可能会有较大的误差，那么上述的式子中，我们对展开函数进行求极值，求出的只是我们的近似函数的极值，并非原始函数的极值，但跟原始的极值很接近，那么我们继续在新的点上展开，然后继续求极值，那么就会越来越接近原始函数的极值。想象一下，如果原始函数在展开的点较为平滑，那么其二次逼近式在那一点附近就会很接近原始的函数，那么每次求得的近似函数的极值会跟原始的函数的极值很接近，那么牛顿法收敛的就会很快。但是如果原始函数在站开点处是一个极其不平滑，坑坑洼洼的函数，那么我们在那一点展开的二次逼近式，就可能会跟原始函数相差很远，那么求得的极值可能会跟原始函数的极值不是很接近，甚至会变得更远，这也许就是牛顿法的一些局限性的原因吧。 在上面提到的方法中我们发现，梯度下降是先确定方向，然后沿着方向走，牛顿法也很类似，展开逼近函数后，沿着逼近函数的极值，其实就是沿着一个二阶的方向走。那么本文要说的是另外的一种思路，如果我们先不确定方向，而是先确定下一步我们要走的长度，从初始点开始，确定下一步要走的长度，然后以该长度为半径的空间区域内，寻找最小的一个点，走到该点，然后再从新的点确定长度，接着依次的按照这种方法进行迭代，直到找到函数的最小值点。接下来我们详述下该方法的原理。</p>
+<h3 id="信赖域方法原理">信赖域方法原理</h3>
+<p>沿着上述的问题，我们提出几个问题，根据这几个问题，展开描述信赖域方法的实现原理:</p>
+<ol type="1">
+<li>信赖域法在求得步长范围内空间的最小值点时，求的是什么函数的最小值点，是原始的损失函数的最小值点吗?</li>
 </ol>
+<p>2.确定完步长之后，在步长范围内空间是怎样求得最小值点的？</p>
+<p>3.步长是怎样确定的？</p>
 <p>下面一一展开。</p>
-<h4 id="问题一"><a href="#问题一" class="headerlink" title="问题一"></a>问题一</h4><p>信赖域法在求得步长范围内空间的最小值点时，求的是什么函数的最小值点，是原始的损失函数的最小值点吗?<br>求的不是原始函数的极值点。信赖域法跟牛顿法有一点很相似，同样是在初始点进行泰勒展开，取的同样是二阶式，即如下</p>
-<script type="math/tex; mode=display">f(x) \approx f({x_k}) + \nabla f{({x_k})^{\rm T}}(x - {x_k}) + \frac{1}{2}{(x - {x_k})^{\rm T}}{\nabla ^2}f({x_k})(x - {x_k})</script><p>然后进行化简,令$d=x-x_k$得</p>
-<script type="math/tex; mode=display">\varphi (d) = f({x_k})\nabla f{({x_k})^{\rm T}}d + \frac{1}{2}{d^{\rm T}}{\nabla ^2}f({x_k})d</script><p>我们把原始的损失函数在$x_k$处展开取得二阶式用于逼近原始的损失函数，然后按照一定的规则，确定一个步长，把展开的逼近函数在该空间内求最小值，实际的数学公式如下，</p>
-<script type="math/tex; mode=display">
+<h4 id="问题一">问题一</h4>
+<p>信赖域法在求得步长范围内空间的最小值点时，求的是什么函数的最小值点，是原始的损失函数的最小值点吗?<br>
+求的不是原始函数的极值点。信赖域法跟牛顿法有一点很相似，同样是在初始点进行泰勒展开，取的同样是二阶式，即如下</p>
+<p><span class="math display">\[f(x) \approx f({x_k}) + \nabla f{({x_k})^{\rm T}}(x - {x_k}) + \frac{1}{2}{(x - {x_k})^{\rm T}}{\nabla ^2}f({x_k})(x - {x_k})\]</span></p>
+<p>然后进行化简,令<span class="math inline">\(d=x-x_k\)</span>得</p>
+<p><span class="math display">\[\varphi (d) = f({x_k})\nabla f{({x_k})^{\rm T}}d + \frac{1}{2}{d^{\rm T}}{\nabla ^2}f({x_k})d\]</span></p>
+<p>我们把原始的损失函数在<span class="math inline">\(x_k\)</span>处展开取得二阶式用于逼近原始的损失函数，然后按照一定的规则，确定一个步长，把展开的逼近函数在该空间内求最小值，实际的数学公式如下，</p>
+<p><span class="math display">\[
 \begin{cases}
 \varphi (d) = f({x_k})\nabla f{({x_k})^{\rm T}}d + \frac{1}{2}{d^{\rm T}}{\nabla ^2}f({x_k})d\\
 ||d|| \le {h_k}\\
-\end{cases}</script><p>解释下，为什么是限制$||d||$，我们知道$d=x-x_k$，那么可以理解为我们要找到的最佳点为$x$,距离我们当前展开点的长度。</p>
-<h4 id="问题二"><a href="#问题二" class="headerlink" title="问题二"></a>问题二</h4><p>确定完步长之后，在步长范围内空间是怎样求得最小值点的？<br>在第一个问题的解答，我们知道信赖域法把损失函数在某一点展开后，取二阶式，然后再确定一个步长，然后求其最小值。很明显，这是一个带有约束条件的最优化问题，求带有约束条件尤其是不等式约束条件的最优化问题我们常用到的就是KKT条件，这里我们简单讲述下KKT条件，详细的请看我总结的另一篇：KKT条件推导（还未更新）。KKT条件专门用于求解带有不等式约束条件的最优化问题，它把待最优化问题中的目标函数、不等式以及等式约束条件，转化为可求解的方程组，也就是说如果原始问题存在极值解，那么极值解一定满足KKT的条件（即为必要条件），其中满足的条件可写为一个方程组，解这个方程组即可。</p>
-<h4 id="问题三"><a href="#问题三" class="headerlink" title="问题三"></a>问题三</h4><p>步长是怎样确定的？<br>当我们求得在步长空间范围内的最小值点时，就要确定下一步的步长范围（注意，在算法的初始，我们会给出一个初始的步长和初始点）。确定下一步步长的原则是，看在求得的最小值点处，实际的损失函数的下降值与二次逼近式的预测下降值进行对比，如果实际的下降值满足预期的，则使得函数走到该点（更新$x_k+1$），并且继续使用上一步的步长，甚至扩大步长，如果实际的下降不满足预期，则缩小步长，如果非常不满足，甚至不会更新$x_k+1$，下面使用公式描述下。<br>假设函数求得的最佳值为$d_k$，即为我们要更新的向量，那么实际的下降值为$f({x_k}) - f({x_k} + {d_k})$<br>我们预测的下降值为原始的值，减去我们逼近函数的最小值，即为 $f({x_k}) - \varphi ({d_k})$<br>二者的比值为  </p>
-<script type="math/tex; mode=display">{\rho _k} = \frac{f({x_k}) - f({x_k} + {d_k})}{f({x_k}) - \varphi ({d_k})}</script><p>我们根据这个比值可以来自定义步长更新规则，下面举例说明。<br>假设初始信赖域半径为$h_1$,初始点为$x_1$,求得的最佳的极值点为$d_1$，那么我们假设两个参数$0 &lt; \mu  &lt; \eta  &lt; 1$<br>更新迭代点如果比值 $\rho_1 \le \mu$ 时，则不更新$x_2$，即为$x_2 = x_1$，如果$\rho_1 &gt; \mu$，则$x_2 = x_1+d_1$。<br>更新信赖域半径如果$\rho_1 \le \mu$时，则缩小信赖域半径，$h_2=\frac{1}{2}h_1$，如果$\mu &lt; \rho_1 &lt;  \eta$，则令$h_2=h_1$，如果$\rho_1 \ge \eta$，则令$h_2=2h_1$<br>依次迭代下去。</p>
-<h4 id="信赖域算法的步骤："><a href="#信赖域算法的步骤：" class="headerlink" title="信赖域算法的步骤："></a>信赖域算法的步骤：</h4><p>(1)从初始点 $x_0$ ，初始信赖域半径$h_0$ 开始迭代  </p>
-<p>(2)到第 k 步时，求出二次逼近式  </p>
-<p>(3)解信赖域模型，求出位移 $d_k$ ，计算$\rho_k$  </p>
-<p>(4)若 $\rho_k≤0.25$ ，说明步子迈得太大了，应缩小信赖域半径，令 $h_k+1=\frac{1}{2}h_k$,这时不应该走到下一点，而应“原地踏步”，即 $x_k+1=x_k$  </p>
-<p>(5)若 $\rho_k≥0.75$ 且$||d_k||=h_k$，说明这一步已经迈到了信赖域半径的边缘，并且步子有点小，可以尝试扩大信赖域半径，令 $h_k+1=2h_k$,可以走到下一点，即 $x_k+1=x_k+d_k$  </p>
-<p>(6)若 $0.25&lt;\rho_k&lt;0.75$ ，说明这一步迈出去之后，处于“可信赖”和“不可信赖”之间，可以维持当前的信赖域半径，令 $h_k+1=h_k$,且可以走到下一点，即 $x_k+1=x_k+d_k$  </p>
-<h3 id="感性的理解信赖域算法"><a href="#感性的理解信赖域算法" class="headerlink" title="感性的理解信赖域算法"></a>感性的理解信赖域算法</h3><h4 id="最优化算法中迭代的思想："><a href="#最优化算法中迭代的思想：" class="headerlink" title="最优化算法中迭代的思想："></a>最优化算法中迭代的思想：</h4><p>由于目标函数过于复杂，无法一次性的求出函数的极值点，我们随机的找一个点，并且在该点处的附近用一个稍微简单的函数作为近似函数来代替目标函数，因为在一个点附近可以认为函数是平滑的，然后求出近似函数的极值，即为接近目标函数极值的点，然后更新该点，继续在该点处用近似函数代替目标函数，再次求出新的极值，一次次的逼近原始的目标函数的极值点。</p>
-<h4 id="信赖域半径更新规则的原因"><a href="#信赖域半径更新规则的原因" class="headerlink" title="信赖域半径更新规则的原因"></a>信赖域半径更新规则的原因</h4><p>当实际的下降量远小于预测的下降量时，说明了我们选的步长太大，为何这么说呢？因为我们知道逼近函数只有在展开点处附近接近目标函数，但是步长太大，我们的逼近函数在较远处与目标函数就会相差很大，这样逼近函数认为下降较大的点，实际目标函数并不会下降很多，所以我们要缩小步长，保证逼近函数与原始函数相差不大，这样保证下降的方向是对的。<br>同样的如果下降的很符合预期，说明什么，说明我们的逼近函数非常接近目标函数，两种可能，一种是目标函数在该点处的较大范围附近是平滑的，一种是，我们的步长选的太小了，在很小步长的范围内逼近函数非常接近目标函数，无论是哪种可能，我们都要扩大步长，来加快收敛。</p>
-<h4 id="泰勒展开的重要性"><a href="#泰勒展开的重要性" class="headerlink" title="泰勒展开的重要性"></a>泰勒展开的重要性</h4><p>感觉泰勒展开就是这些最优化算法的基础，把复杂的目标函数在某一点处展开作为近似的目标函数是整个最优化算法精髓。</p>
+\end{cases}
+\]</span></p>
+<p>解释下，为什么是限制<span class="math inline">\(||d||\)</span>，我们知道<span class="math inline">\(d=x-x_k\)</span>，那么可以理解为我们要找到的最佳点为<span class="math inline">\(x\)</span>,距离我们当前展开点的长度。</p>
+<h4 id="问题二">问题二</h4>
+<p>确定完步长之后，在步长范围内空间是怎样求得最小值点的？<br>
+在第一个问题的解答，我们知道信赖域法把损失函数在某一点展开后，取二阶式，然后再确定一个步长，然后求其最小值。很明显，这是一个带有约束条件的最优化问题，求带有约束条件尤其是不等式约束条件的最优化问题我们常用到的就是KKT条件，这里我们简单讲述下KKT条件，详细的请看我总结的另一篇：KKT条件推导（还未更新）。KKT条件专门用于求解带有不等式约束条件的最优化问题，它把待最优化问题中的目标函数、不等式以及等式约束条件，转化为可求解的方程组，也就是说如果原始问题存在极值解，那么极值解一定满足KKT的条件（即为必要条件），其中满足的条件可写为一个方程组，解这个方程组即可。</p>
+<h4 id="问题三">问题三</h4>
+<p>步长是怎样确定的？<br>
+当我们求得在步长空间范围内的最小值点时，就要确定下一步的步长范围（注意，在算法的初始，我们会给出一个初始的步长和初始点）。确定下一步步长的原则是，看在求得的最小值点处，实际的损失函数的下降值与二次逼近式的预测下降值进行对比，如果实际的下降值满足预期的，则使得函数走到该点（更新<span class="math inline">\(x_k+1\)</span>），并且继续使用上一步的步长，甚至扩大步长，如果实际的下降不满足预期，则缩小步长，如果非常不满足，甚至不会更新<span class="math inline">\(x_k+1\)</span>，下面使用公式描述下。 假设函数求得的最佳值为<span class="math inline">\(d_k\)</span>，即为我们要更新的向量，那么实际的下降值为 <span class="math inline">\(f({x_k}) - f({x_k} + {d_k})\)</span> 我们预测的下降值为原始的值，减去我们逼近函数的最小值，即为 <span class="math inline">\(f({x_k}) - \varphi ({d_k})\)</span> 二者的比值为<br>
+<span class="math display">\[{\rho _k} = \frac{f({x_k}) - f({x_k} + {d_k})}{f({x_k}) - \varphi ({d_k})}\]</span> 我们根据这个比值可以来自定义步长更新规则，下面举例说明。 假设初始信赖域半径为 <span class="math inline">\(h_1\)</span> ,初始点为 <span class="math inline">\(x_1\)</span> ,求得的最佳的极值点为 <span class="math inline">\(d_1\)</span> ，那么我们假设两个参数 <span class="math inline">\(0 &lt; \mu &lt; \eta &lt; 1\)</span> 更新迭代点如果比值 <span class="math inline">\(\rho_1 \le \mu\)</span> 时，则不更新 <span class="math inline">\(x_2\)</span> ，即为 <span class="math inline">\(x_2 = x_1\)</span> ，如果 <span class="math inline">\(\rho_1 &gt; \mu\)</span> ，则 <span class="math inline">\(x_2 = x_1+d_1\)</span> 。 更新信赖域半径如果 <span class="math inline">\(\rho_1 \le \mu\)</span> 时，则缩小信赖域半径，<span class="math inline">\(h_2=\frac{1}{2}h_1\)</span> ，如果 <span class="math inline">\(\mu &lt; \rho_1 &lt; \eta\)</span> ，则令 <span class="math inline">\(h_2=h_1\)</span> ，如果 <span class="math inline">\(\rho_1 \ge \eta\)</span> ，则令 <span class="math inline">\(h_2=2h_1\)</span> 依次迭代下去。</p>
+<h4 id="信赖域算法的步骤">信赖域算法的步骤：</h4>
+<p>(1)从初始点 <span class="math inline">\(x_0\)</span> ，初始信赖域半径 <span class="math inline">\(h_0\)</span> 开始迭代</p>
+<p>(2)到第 k 步时，求出二次逼近式</p>
+<p>(3)解信赖域模型，求出位移 <span class="math inline">\(d_k\)</span> ，计算 <span class="math inline">\(\rho_k\)</span></p>
+<p>(4)若 <span class="math inline">\(\rho_k≤0.25\)</span> ，说明步子迈得太大了，应缩小信赖域半径，令 <span class="math inline">\(h_k+1=\frac{1}{2}h_k\)</span> ,这时不应该走到下一点，而应“原地踏步”，即 <span class="math inline">\(x_k+1=x_k\)</span></p>
+<p>(5)若 <span class="math inline">\(\rho_k≥0.75\)</span> 且 <span class="math inline">\(||d_k||=h_k\)</span> ，说明这一步已经迈到了信赖域半径的边缘，并且步子有点小，可以尝试扩大信赖域半径，令 <span class="math inline">\(h_k+1=2h_k\)</span> ,可以走到下一点,即 <span class="math inline">\(x_k+1=x_k+d_k\)</span></p>
+<p>(6)若 <span class="math inline">\(0.25&lt;\rho_k&lt;0.75\)</span> ，说明这一步迈出去之后，处于“可信赖”和“不可信赖”之间，可以维持当前的信赖域半径，令 <span class="math inline">\(h_k+1=h_k\)</span> ,且可以走到下一点，即 <span class="math inline">\(x_k+1=x_k+d_k\)</span></p>
+<h3 id="感性的理解信赖域算法">感性的理解信赖域算法</h3>
+<h4 id="最优化算法中迭代的思想">最优化算法中迭代的思想：</h4>
+<p>由于目标函数过于复杂，无法一次性的求出函数的极值点，我们随机的找一个点，并且在该点处的附近用一个稍微简单的函数作为近似函数来代替目标函数，因为在一个点附近可以认为函数是平滑的，然后求出近似函数的极值，即为接近目标函数极值的点，然后更新该点，继续在该点处用近似函数代替目标函数，再次求出新的极值，一次次的逼近原始的目标函数的极值点。</p>
+<h4 id="信赖域半径更新规则的原因">信赖域半径更新规则的原因</h4>
+<p>当实际的下降量远小于预测的下降量时，说明了我们选的步长太大，为何这么说呢？因为我们知道逼近函数只有在展开点处附近接近目标函数，但是步长太大，我们的逼近函数在较远处与目标函数就会相差很大，这样逼近函数认为下降较大的点，实际目标函数并不会下降很多，所以我们要缩小步长，保证逼近函数与原始函数相差不大，这样保证下降的方向是对的。 同样的如果下降的很符合预期，说明什么，说明我们的逼近函数非常接近目标函数，两种可能，一种是目标函数在该点处的较大范围附近是平滑的，一种是，我们的步长选的太小了，在很小步长的范围内逼近函数非常接近目标函数，无论是哪种可能，我们都要扩大步长，来加快收敛。</p>
+<h4 id="泰勒展开的重要性">泰勒展开的重要性</h4>
+<p>感觉泰勒展开就是这些最优化算法的基础，把复杂的目标函数在某一点处展开作为近似的目标函数是整个最优化算法精髓。</p>
 
       
       
@@ -362,8 +373,8 @@ $$f&#39;({x_k}) + f&#39;&#39;({x_k})(x - {x_k}) = 0$$
     <div class="copyright">
         <p><span>本文标题:</span><a href="/2017/12/13/2017-11-24-信赖域算法原理/">信赖域算法原理</a></p>
         <p><span>文章作者:</span><a href="/" title="访问 Jinzhongwei 的个人博客">Jinzhongwei</a></p>
-        <p><span>发布时间:</span>2017年12月13日 - 20时29分</p>
-        <p><span>最后更新:</span>2017年12月13日 - 20时29分</p>
+        <p><span>发布时间:</span>2017年12月13日 - 20时34分</p>
+        <p><span>最后更新:</span>2017年12月13日 - 20时34分</p>
         <p>
             <span>原始链接:</span><a class="post-url" href="/2017/12/13/2017-11-24-信赖域算法原理/" title="信赖域算法原理">http://crazycoder.info/2017/12/13/2017-11-24-信赖域算法原理/</a>
             <span class="copy-path" data-clipboard-text="原文: http://crazycoder.info/2017/12/13/2017-11-24-信赖域算法原理/　　作者: Jinzhongwei" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
@@ -392,7 +403,7 @@ $$f&#39;({x_k}) + f&#39;&#39;({x_k})(x - {x_k}) = 0$$
 
     <div id="toc" class="toc-article">
     <strong class="toc-title">文章目录</strong>
-    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#最优化方法介绍"><span class="toc-number">1.</span> <span class="toc-text">最优化方法介绍</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#信赖域方法原理"><span class="toc-number">2.</span> <span class="toc-text">信赖域方法原理</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#问题一"><span class="toc-number">2.1.</span> <span class="toc-text">问题一</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#问题二"><span class="toc-number">2.2.</span> <span class="toc-text">问题二</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#问题三"><span class="toc-number">2.3.</span> <span class="toc-text">问题三</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#信赖域算法的步骤："><span class="toc-number">2.4.</span> <span class="toc-text">信赖域算法的步骤：</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#感性的理解信赖域算法"><span class="toc-number">3.</span> <span class="toc-text">感性的理解信赖域算法</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#最优化算法中迭代的思想："><span class="toc-number">3.1.</span> <span class="toc-text">最优化算法中迭代的思想：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#信赖域半径更新规则的原因"><span class="toc-number">3.2.</span> <span class="toc-text">信赖域半径更新规则的原因</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#泰勒展开的重要性"><span class="toc-number">3.3.</span> <span class="toc-text">泰勒展开的重要性</span></a></li></ol></li></ol>
+    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#最优化方法介绍"><span class="toc-number">1.</span> <span class="toc-text">最优化方法介绍</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#信赖域方法原理"><span class="toc-number">2.</span> <span class="toc-text">信赖域方法原理</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#问题一"><span class="toc-number">2.1.</span> <span class="toc-text">问题一</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#问题二"><span class="toc-number">2.2.</span> <span class="toc-text">问题二</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#问题三"><span class="toc-number">2.3.</span> <span class="toc-text">问题三</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#信赖域算法的步骤"><span class="toc-number">2.4.</span> <span class="toc-text">信赖域算法的步骤：</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#感性的理解信赖域算法"><span class="toc-number">3.</span> <span class="toc-text">感性的理解信赖域算法</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#最优化算法中迭代的思想"><span class="toc-number">3.1.</span> <span class="toc-text">最优化算法中迭代的思想：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#信赖域半径更新规则的原因"><span class="toc-number">3.2.</span> <span class="toc-text">信赖域半径更新规则的原因</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#泰勒展开的重要性"><span class="toc-number">3.3.</span> <span class="toc-text">泰勒展开的重要性</span></a></li></ol></li></ol>
 </div>
 <input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
 
