@@ -9,10 +9,10 @@
 <meta name="keywords" content="centos,k-vim">
 <meta property="og:type" content="article">
 <meta property="og:title" content="centos 安装k-vim完全教程版">
-<meta property="og:url" content="http://crazycoder.info/2017/12/03/2017-12-03-centos 安装k-vim完全教程版/index.html">
+<meta property="og:url" content="http://crazycoder.info/2017/12/13/2017-12-03-centos 安装k-vim完全教程版/index.html">
 <meta property="og:site_name" content="饮水思源">
 <meta property="og:description" content="记录在装vim插件时遇到的各种坑">
-<meta property="og:updated_time" content="2017-12-03T09:36:59.000Z">
+<meta property="og:updated_time" content="2017-12-13T12:11:20.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="centos 安装k-vim完全教程版">
 <meta name="twitter:description" content="记录在装vim插件时遇到的各种坑">
@@ -236,8 +236,8 @@
       <div class="body-wrap"><article id="post-2017-12-03-centos 安装k-vim完全教程版" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
-      <a href="/2017/12/03/2017-12-03-centos 安装k-vim完全教程版/" class="article-date">
-      <time datetime="2017-12-03T08:56:00.000Z" itemprop="datePublished">2017-12-03</time>
+      <a href="/2017/12/13/2017-12-03-centos 安装k-vim完全教程版/" class="article-date">
+      <time datetime="2017-12-13T12:11:20.000Z" itemprop="datePublished">2017-12-13</time>
 </a>
     </div>
   
@@ -281,40 +281,28 @@
 <h5 id="创建安装目录">3. 创建安装目录</h5>
 <p>mkdir /usr/local/python27</p>
 <h5 id="安装python">4. 安装python</h5>
-<p>./configure –prefix=/usr/local/python27 –enable-shared make make install 其中 –enable-shared会使得对python进行动态编译，生成 libpython2.7.so.1.0 和 libpython2.7.so 文件。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">./configure --prefix=/usr/local/python27 --enable-shared  </span><br><span class="line">make  </span><br><span class="line">make install</span><br></pre></td></tr></table></figure>
+<p>其中 –enable-shared会使得对python进行动态编译，生成 libpython2.7.so.1.0 和 libpython2.7.so 文件。</p>
 <h5 id="修改老版本的ln指向注意这里修改后可能会影响yum的使用">5. 修改老版本的ln指向（注意：这里修改后，可能会影响yum的使用）</h5>
-<p>ln -s /usr/local/python27/bin/python /usr/bin/python</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ln -s /usr/local/python27/bin/python /usr/bin/python</span><br></pre></td></tr></table></figure>
 <h5 id="注意很多人在动态编译完之后发现还是不行安装ycm时继续报同样的错误那是应为你没有把动态编译的库放在正确的位置">6.注意：很多人在动态编译完之后，发现还是不行，安装YCM时，继续报同样的错误，那是应为你没有把动态编译的库放在正确的位置。</h5>
-<p>6.1. cp /usr/local/python27/lib/libpython2.7.so.1.0　 /usr/local/lib</p>
-<pre><code> cd /usr/local/lib  
-
- ln -s libpython2.7.so.1.0 　libpython2.7.so  </code></pre>
-<p>6.2. 使用命令whereis libpython2.7.so.1.0得到如下结果就说明 libpython2.7.so.1: /usr/local/lib/libpython2.7.so.1.0</p>
-<p>6.3. 如果whereis没有结果，或者还有import错误，可以尝试如下操作： 在/etc/ld.so.conf中加入新行/usr/local/lib</p>
-<pre><code>保存后，运行  
-
-/sbin/ldconfig  
-
-/sbin/ldconfig –v  </code></pre>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cp /usr/local/python27/lib/libpython2.7.so.1.0　 /usr/local/lib  </span><br><span class="line">cd /usr/local/lib  </span><br><span class="line">ln -s libpython2.7.so.1.0 　libpython2.7.so</span><br></pre></td></tr></table></figure>
+<p>使用命令whereis libpython2.7.so.1.0得到如下结果就说明</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">libpython2.7.so.1: /usr/local/lib/libpython2.7.so.1.0</span><br></pre></td></tr></table></figure>
+<p>如果whereis没有结果，或者还有import错误，可以尝试如下操作： 在/etc/ld.so.conf中加入新行<br>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/usr/local/lib</span><br></pre></td></tr></table></figure></p>
+<p>保存后，运行<br>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">/sbin/ldconfig  </span><br><span class="line">/sbin/ldconfig –v</span><br></pre></td></tr></table></figure></p>
 <h4 id="二确保你的vim版本够高最好还是直接安装vim8.0">二、确保你的vim版本够高，最好还是直接安装vim8.0</h4>
-<p>gitclone git@github.com:jinzhongwei/vim.git cd vim/src ./configure –with-features=huge –enable-rubyinterp –enable-pythoninterp –enable-luainterp –enable-multibyte –enable-sniff –enable-fontset –enable-cscope –enable-gui=auto –prefix=/usr –enable-xsmp –enable-xim –enable-gpm</p>
-<p>make</p>
-<p>make install</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">gitclone git@github.com:jinzhongwei/vim.git</span><br><span class="line">cd vim/src</span><br><span class="line">./configure --with-features=huge --enable-rubyinterp --enable-pythoninterp --enable-luainterp --enable-multibyte --enable-sniff  --enable-fontset --enable-cscope --enable-gui=auto --prefix=/usr  --enable-xsmp --enable-xim --enable-gpm  </span><br><span class="line">make   </span><br><span class="line">make install</span><br></pre></td></tr></table></figure>
 <h4 id="三安装k-vim">三、安装k-vim</h4>
 <h5 id="下载">下载</h5>
-<p>git clone git@github.com:jinzhongwei/k-vim.git</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git clone git@github.com:jinzhongwei/k-vim.git</span><br></pre></td></tr></table></figure>
 <h5 id="安装依赖">安装依赖</h5>
-<p>sudo yum install python-devel.x86_64</p>
-<p>sudo yum groupinstall ‘Development Tools’</p>
-<p>sudo rpm -Uvh https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm</p>
-<p>sudo yum install the_silver_searcher</p>
-<p>sudo yum install cmake</p>
-<p>pip install flake8 yapf</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">sudo yum install python-devel.x86_64  </span><br><span class="line"></span><br><span class="line">sudo yum groupinstall 'Development Tools'  </span><br><span class="line"></span><br><span class="line">sudo rpm -Uvh https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm  </span><br><span class="line"></span><br><span class="line">sudo yum install the_silver_searcher  </span><br><span class="line"></span><br><span class="line">sudo yum install cmake  </span><br><span class="line"></span><br><span class="line">pip install flake8 yapf</span><br></pre></td></tr></table></figure>
 <h5 id="安装">安装</h5>
-<p>cd k-vim/</p>
-<p>sh -x install.sh</p>
-<p>安装完之后，运行命令vim，如果没有报什么问题，恭喜你安装成功。 如果出现什么问题，根据问题进行解决，注意很重要的一点要对YCM重新编译一遍， cd k-vim/bundle/YouCompleteMe/</p>
-<p>./install.sh –clang-completer</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd k-vim/  </span><br><span class="line">sh -x install.sh</span><br></pre></td></tr></table></figure>
+<p>安装完之后，运行命令vim，如果没有报什么问题，恭喜你安装成功。 如果出现什么问题，根据问题进行解决，注意很重要的一点要对YCM重新编译一遍 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd k-vim/bundle/YouCompleteMe/  </span><br><span class="line">./install.sh --clang-completer</span><br></pre></td></tr></table></figure></p>
 <h4 id="四注意">四、注意</h4>
 <p>在安装之前还需要注意自己的电脑的CMake版本是不是过低，以及GCC版本过低，如果过低，请自行升级。 我自测的GCC版本4.8.5可以，CMake3.0可以</p>
 
@@ -372,13 +360,13 @@
   
     
     <div class="copyright">
-        <p><span>本文标题:</span><a href="/2017/12/03/2017-12-03-centos 安装k-vim完全教程版/">centos 安装k-vim完全教程版</a></p>
+        <p><span>本文标题:</span><a href="/2017/12/13/2017-12-03-centos 安装k-vim完全教程版/">centos 安装k-vim完全教程版</a></p>
         <p><span>文章作者:</span><a href="/" title="访问 Jinzhongwei 的个人博客">Jinzhongwei</a></p>
-        <p><span>发布时间:</span>2017年12月03日 - 16时56分</p>
-        <p><span>最后更新:</span>2017年12月03日 - 17时36分</p>
+        <p><span>发布时间:</span>2017年12月13日 - 20时11分</p>
+        <p><span>最后更新:</span>2017年12月13日 - 20时11分</p>
         <p>
-            <span>原始链接:</span><a class="post-url" href="/2017/12/03/2017-12-03-centos 安装k-vim完全教程版/" title="centos 安装k-vim完全教程版">http://crazycoder.info/2017/12/03/2017-12-03-centos 安装k-vim完全教程版/</a>
-            <span class="copy-path" data-clipboard-text="原文: http://crazycoder.info/2017/12/03/2017-12-03-centos 安装k-vim完全教程版/　　作者: Jinzhongwei" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <span>原始链接:</span><a class="post-url" href="/2017/12/13/2017-12-03-centos 安装k-vim完全教程版/" title="centos 安装k-vim完全教程版">http://crazycoder.info/2017/12/13/2017-12-03-centos 安装k-vim完全教程版/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://crazycoder.info/2017/12/13/2017-12-03-centos 安装k-vim完全教程版/　　作者: Jinzhongwei" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
             <script src="/js/clipboard.min.js"></script>
             <script> var clipboard = new Clipboard('.copy-path'); </script>
         </p>
@@ -479,7 +467,7 @@
             </a>
         
     </div>
-    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2017/12/03/2017-12-03-centos 安装k-vim完全教程版/">centos 安装k-vim完全教程版</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/11/01/2017-11-24-信赖域算法原理/">信赖域算法原理</a></li></ul>
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2017/12/13/2017-12-03-centos 安装k-vim完全教程版/">centos 安装k-vim完全教程版</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/11/01/2017-11-24-信赖域算法原理/">信赖域算法原理</a></li></ul>
     <script src="https://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
     <script>
         $(".post-list").addClass("toc-article");
